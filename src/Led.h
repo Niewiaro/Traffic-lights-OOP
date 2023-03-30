@@ -7,6 +7,7 @@ public: // public section, accessable for everyone
     bool setInterval(int interval); // setting method
     void blink(); // blinking method
     void blinks(int quantity= 3, int blinksInterval= 100, bool stayHigh= false); // blinking method
+    bool power(bool power= true);
 
 private: // private part
     int time;

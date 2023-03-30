@@ -30,3 +30,12 @@ void Led::blinks(int quantity, int blinksInterval, bool stayHigh) {
     if(stayHigh)
         digitalWrite(ledPin, HIGH);
 }
+
+bool Led::power(bool power) {
+    if(power) {
+        digitalWrite(ledPin, HIGH);
+        return true;
+    }
+    digitalWrite(ledPin, LOW);
+    return false;
+}
