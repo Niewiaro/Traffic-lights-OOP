@@ -18,6 +18,7 @@ Led *pRedLed; // pointer to Led Class Object
 Led *pYellowLed;
 Led *pGreenLed;
 float *pTime= NULL; // pointer to time
+bool on= false;
 
 void setup() { // the setup function runs once when you press reset or power the board
   float time= TIME; // set tiem as defined
@@ -42,8 +43,22 @@ void setup() { // the setup function runs once when you press reset or power the
   redLed.blinks(5, 80, true);
   yellowLed.blinks(5, 80, true);
   greenLed.blinks(5, 80, true);
+
+  ledBuiltin.power(false);
 }
 
 void loop() { // the loop function runs over and over again forever
-
+  if(on) {
+    pRedLed->power(on);
+    pYellowLed->power(on);
+    pGreenLed->power(on);
+    on= false;
+  }
+  else {
+    pRedLed->power(on);
+    pYellowLed->power(on);
+    pGreenLed->power(on);
+    on= true;
+  }
+  delay(1000);
 }
