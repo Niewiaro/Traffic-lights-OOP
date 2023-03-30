@@ -60,5 +60,7 @@ void loop() { // the loop function runs over and over again forever
     pGreenLed->power(on);
     on= true;
   }
+  
   delay(1000);
+  while (digitalRead(BUTTON_PIN) == HIGH) {} // wait until press of the button
 }
