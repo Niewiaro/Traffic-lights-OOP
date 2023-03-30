@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <Led.h>
 
-Led::Led(int interval, int pin): time(interval), ledPin(pin) {} // constructor with initialization list
+Led::Led(int interval, int pin): time(interval), ledPin(pin) { // constructor with initialization list
+    digitalWrite(ledPin, LOW);
+} 
 
 bool Led::setInterval(int interval) {
     if(interval<= 0)
