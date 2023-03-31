@@ -12,55 +12,63 @@
 #define GREEN_LED_PIN 8 // pin used for GREEN LED
 #define TIME 1000 // time of blink
 #define PERCENT 20 // decrease interval in %
+#define NUMBER_OF_LED 4 // total in use
 
-Led *pLedBuiltin; // pointer to Led Class Object
-Led *pRedLed; // pointer to Led Class Object
-Led *pYellowLed;
-Led *pGreenLed;
-float *pTime= NULL; // pointer to time
-bool on= false;
+Led* ledArr[NUMBER_OF_LED]; // arr of pointers
+bool power= false;
+
+void insertAtEnd(Led* arr[], int &n, Led *e) {
+  if(n< NUMBER_OF_LED)
+    arr[n] = e;
+  n++;
+}
+
+void blinks(Led* arr[], int size= NUMBER_OF_LED, int quantity= 5, int blinksInterval= 80, bool stayHigh= true) {
+  for(int i= 0; i< size; i++)
+    arr[i]->blinks(quantity, blinksInterval, stayHigh);
+}
+
+bool changeState(Led* arr[], int size= NUMBER_OF_LED, bool isOn= true) {
+  for(int i= 0; i< size; i++)
+    arr[i]->power(isOn);
+  if(isOn)
+    return false;
+  return true;
+}
 
 void setup() { // the setup function runs once when you press reset or power the board
-  float time= TIME; // set tiem as defined
-  pTime= &time; // set pointer to varable
-
   pinMode(LED_BUILTIN, OUTPUT); // initialize digital pin LED_BUILTIN as an output (13)
   pinMode(RED_LED_PIN, OUTPUT); // initialize digital pin RED_LED_PIN as an output
-  pinMode(YELLOW_LED_PIN, OUTPUT); // initialize digital pin YELLOW_LED_PIN as an output
-  pinMode(GREEN_LED_PIN, OUTPUT); // initialize digital pin GREEN_LED_PIN as an output
+  pinMode(YELLOW_LED_PIN, OUTPUT);
+  pinMode(GREEN_LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP); // button as imput
 
-  Led ledBuiltin(time, LED_BUILTIN); // declaration of an object of LED_BUILTIN
-  pLedBuiltin= &ledBuiltin; // set pointer to object
-  Led redLed(time, RED_LED_PIN); // declaration of an object of RED_LED_PIN
-  pRedLed= &redLed; // set pointer to object
-  Led yellowLed(time, YELLOW_LED_PIN); // declaration of an object of YELLOW_LED_PIN
-  pYellowLed= &yellowLed; // set pointer to object
-  Led greenLed(time, GREEN_LED_PIN); // declaration of an object of GREEN_LED_PIN
-  pGreenLed= &greenLed; // set pointer to object
+  Led *pLedBuiltin; // pointer to Led Class Object
+  Led *pRedLed; // pointer to Led Class Object
+  Led *pYellowLed;
+  Led *pGreenLed;
 
-  ledBuiltin.blinks(5, 80, true);
-  redLed.blinks(5, 80, true);
-  yellowLed.blinks(5, 80, true);
-  greenLed.blinks(5, 80, true);
+  int iterator= 0;
 
-  ledBuiltin.power(false);
+  Led ledBuiltin(TIME, LED_BUILTIN); // declaration of an object of LED_BUILTIN
+  insertAtEnd(ledArr, iterator, pLedBuiltin= &ledBuiltin);
+  Led redLed(TIME, RED_LED_PIN); // declaration of an object of RED_LED_PIN
+  insertAtEnd(ledArr, iterator, pRedLed= &redLed);
+  Led yellowLed(TIME, YELLOW_LED_PIN); 
+  insertAtEnd(ledArr, iterator, pYellowLed= &yellowLed);
+  Led greenLed(TIME, GREEN_LED_PIN); 
+  insertAtEnd(ledArr, iterator, pGreenLed= &greenLed);
+
+  blinks(ledArr);
+  delay(TIME);
+
+  changeState(ledArr, NUMBER_OF_LED, false);
+  delay(TIME);
 }
 
 void loop() { // the loop function runs over and over again forever
-  if(on) {
-    pRedLed->power(on);
-    pYellowLed->power(on);
-    pGreenLed->power(on);
-    on= false;
-  }
-  else {
-    pRedLed->power(on);
-    pYellowLed->power(on);
-    pGreenLed->power(on);
-    on= true;
-  }
+  power= changeState(ledArr, NUMBER_OF_LED, power);
   
-  delay(1000);
+  delay(TIME);
   while (digitalRead(BUTTON_PIN) == HIGH) {} // wait until press of the button
 }
