@@ -1,7 +1,5 @@
 // Github
-// https://github.com/Niewiaro/Arduino-FORBOT-1-OOP
-// inspiration
-// https://www.arduino.cc/en/Tutorial/BuiltInExamples/Blink
+// https://github.com/Niewiaro/Traffic-lights-OOP
 
 #include <Arduino.h> // include Arduino library
 #include <Led.h> // include header file of a class
@@ -23,14 +21,16 @@ void insertAtEnd(Led* arr[], int &n, Led *e) {
   n++;
 }
 
-void blinks(Led* arr[], int size= NUMBER_OF_LED, int quantity= 5, int blinksInterval= 80, bool stayHigh= true) {
+void blinks(Led* arr[], int size= NUMBER_OF_LED, int quantity= 5, int blinksInterval= 80, bool stayHigh= true, int delayTime= 0) {
   for(int i= 0; i< size; i++)
     arr[i]->blinks(quantity, blinksInterval, stayHigh);
+  delay(delayTime);
 }
 
-bool changeState(Led* arr[], int size= NUMBER_OF_LED, bool isOn= true) {
+bool changeState(Led* arr[], int size= NUMBER_OF_LED, bool isOn= true, int delayTime= 0) {
   for(int i= 0; i< size; i++)
     arr[i]->power(isOn);
+  delay(delayTime);
   if(isOn)
     return false;
   return true;
@@ -60,15 +60,36 @@ void setup() { // the setup function runs once when you press reset or power the
   insertAtEnd(ledArr, iterator, pGreenLed= &greenLed);
 
   blinks(ledArr);
-  delay(TIME);
-
-  changeState(ledArr, NUMBER_OF_LED, false);
-  delay(TIME);
+  changeState(ledArr, NUMBER_OF_LED, false, TIME);
 }
 
 void loop() { // the loop function runs over and over again forever
-  power= changeState(ledArr, NUMBER_OF_LED, power);
+  //power= changeState(ledArr, NUMBER_OF_LED, power);
+  ledArr[0]->power();
+  ledArr[1]->power();
+  ledArr[2]->power(0);
+  ledArr[3]->power(0);
+  delay(TIME);
+  while (digitalRead(BUTTON_PIN) == HIGH) {} // wait until press of the button
   
+  ledArr[0]->power(0);
+  ledArr[1]->power();
+  ledArr[2]->power();
+  ledArr[3]->power(0);
+  delay(TIME);
+  while (digitalRead(BUTTON_PIN) == HIGH) {} // wait until press of the button
+
+  ledArr[0]->power(0);
+  ledArr[1]->power(0);
+  ledArr[2]->power(0);
+  ledArr[3]->power();
+  delay(TIME);
+  while (digitalRead(BUTTON_PIN) == HIGH) {} // wait until press of the button
+
+  ledArr[0]->power(0);
+  ledArr[1]->power(0);
+  ledArr[2]->power();
+  ledArr[3]->power(0);
   delay(TIME);
   while (digitalRead(BUTTON_PIN) == HIGH) {} // wait until press of the button
 }
